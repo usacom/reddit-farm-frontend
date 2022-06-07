@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pt-16">
+  <v-container>
     <v-card class="mx-auto" v-for="(item, id) in posts" :key="id">
       <v-card-text>
         <h2>{{ item.title }}</h2>

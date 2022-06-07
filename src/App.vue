@@ -9,7 +9,7 @@
       <v-toolbar-title>{{ currentRouteName }}</v-toolbar-title>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" absolute temporary>
+    <v-navigation-drawer v-model="drawer" temporary bottom fixed>
       <v-list nav dense>
         <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
           <!-- <v-list-item v-if="tokenStatus !== null">
@@ -27,44 +27,52 @@
               <span v-if="item.routeName == 'profile'"> u/{{ auth.username }}</span>
             </v-list-item-title>
           </v-list-item>
-          <!-- reg -->
-          <v-list-item v-if="!auth.loggedIn">
-            <v-btn @click="getRedditAuthLink" class="white--text" color="error" depressed>
-              Registration
-            </v-btn>
-          </v-list-item>
-          <!-- Auth -->
-          <v-list-item v-if="!auth.loggedIn">
-            <v-dialog transition="dialog-bottom-transition" max-width="600">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" v-bind="attrs" v-on="on">Login</v-btn>
-              </template>
-              <template v-slot:default="dialog">
-                <v-card>
-                  <v-toolbar color="primary" dark>Login form</v-toolbar>
-                  <v-card-text>
-                    <form>
-                      <v-text-field v-model="username" label="username" required></v-text-field>
-                      <v-text-field
-                        type="password"
-                        v-model="password"
-                        label="password"
-                        required
-                      ></v-text-field>
-                    </form>
-                  </v-card-text>
-                  <v-card-actions class="justify-end">
-                    <v-btn text @click="dialog.value = false">Close</v-btn>
-                    <v-btn color="primary" @click="login()"> Login </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-dialog>
-          </v-list-item>
         </v-list-item-group>
       </v-list>
+      <template v-slot:append>
+        <!-- Logout -->
+        <div class="pa-2" v-if="auth.loggedIn">
+          <v-btn block color="error"  @click="logout">
+            Logout
+          </v-btn>
+        </div>
+        <!-- Reg -->
+        <div class="pa-2" v-if="!auth.loggedIn">
+          <v-btn  @click="getRedditAuthLink" class="white--text" color="error" block>
+            Registration
+          </v-btn>
+        </div>
+        <!-- Auth -->
+        <div class="pa-2" v-if="!auth.loggedIn">
+          <v-dialog transition="dialog-bottom-transition" max-width="600">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" v-bind="attrs" v-on="on" block>Login</v-btn>
+            </template>
+            <template v-slot:default="dialog">
+              <v-card>
+                <v-toolbar color="primary" dark>Login form</v-toolbar>
+                <v-card-text>
+                  <form>
+                    <v-text-field v-model="username" label="username" required></v-text-field>
+                    <v-text-field
+                      type="password"
+                      v-model="password"
+                      label="password"
+                      required
+                    ></v-text-field>
+                  </form>
+                </v-card-text>
+                <v-card-actions class="justify-end">
+                  <v-btn text @click="dialog.value = false">Close</v-btn>
+                  <v-btn color="primary" @click="login()">Login</v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
+        </div>
+      </template>
     </v-navigation-drawer>
-    <div class="pt-16 pb-16 mt-16"></div>
+    <div class="pt-16 pb-16"></div>
     <div class="pa-6">
       <router-view />
     </div>
@@ -173,6 +181,12 @@ export default {
           this.$router.go();
         }
       });
+    },
+    logout() {
+      if (this.auth.loggedIn) {
+        this.$api.setHeaders({ Authorization: '', Accept: 'application/json' });
+        this.$router.go();
+      }
     },
   },
 };

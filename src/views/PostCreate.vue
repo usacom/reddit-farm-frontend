@@ -72,7 +72,8 @@
     </div>
     <div>
       <h2>List of subs</h2>
-      <list-of-subs :custom-title="radioTitle" v-model="subreddits"></list-of-subs>
+      <list-of-subs :custom-title="radioTitle" v-model="subreddits" @input="updateSubreddits">
+      </list-of-subs>
     </div>
     <div class="d-flex justify-center">
       <v-btn color="primary" elevation="2" @click="save"> Save to schedule post(s) </v-btn>
@@ -106,6 +107,10 @@ export default {
   },
   computed: {},
   methods: {
+    updateSubreddits(val) {
+      console.log('updateSubreddits', val);
+      this.subreddits = val;
+    },
     async save() {
       console.log('save');
       console.log('radioTitle', this.radioTitle);

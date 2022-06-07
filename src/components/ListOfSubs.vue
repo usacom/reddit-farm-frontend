@@ -45,6 +45,7 @@
               </td>
               <td class="text-left" width="250px">
                 <v-datetime-picker
+                  v-model="item.timePost"
                   :datetime="item.timePost"
                   label="Select Datetime post"
                   :datePickerProps="{
@@ -52,6 +53,7 @@
                     'next-icon': 'mdi-chevron-right',
                     'prev-icon': 'mdi-chevron-left',
                   }"
+                  @input="(e) => changeDate(e, item.subreddit)"
                 >
                   <template slot="dateIcon"> <v-icon>mdi-calendar-month-outline</v-icon> </template>
                   <template slot="timeIcon"> <v-icon>mdi-clock-outline</v-icon> </template>
@@ -177,11 +179,18 @@ export default {
       this.$set(this.dataForPost, subreddit, item);
       this.emitData();
     },
+    changeDate(event, subreddit) {
+      console.log('changeDate', event, subreddit);
+      const item = this.dataForPost[subreddit];
+      item.timePost = event;
+      this.$set(this.dataForPost, subreddit, item);
+      this.emitData();
+    },
     emitData() {
       const postData = Object.entries(this.dataForPost);
       const filtredData = postData.filter((item) => item[1].status);
       const newData = filtredData.map((item) => item[1]);
-      console.log(newData);
+      console.log('emitData', newData);
       this.$emit(emits.input, newData);
     },
   },
